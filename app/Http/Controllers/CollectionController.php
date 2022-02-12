@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Collection;
 use Illuminate\Http\Request;
 use App\Repositories\CollectionRepository;
 
@@ -26,16 +28,6 @@ class CollectionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -43,7 +35,43 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "title" => ["required", "string", "max:50"],
+            "user_id" => ["required", "exists:users,id"],
+        ]);
+
+        $collection = Collection::create([
+            "title" => $request->title,
+            "user_id" => $request->user_id,
+        ]);
+
+        return response("Collection was successfully added", 200);
+    }
+
+    /**
+     * Display a listing of all user collections.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function userCollections(int $userID)
+    {
+        $collections = $this->collectionRepo->getUserCollections($userID);
+
+        return response($collections, 200);
+    }
+
+    /**
+     * Display a single user collection.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function userCollection(User $user, Collection $collection)
+    {
+        if ($user->cannot("view", $collection)) {
+            abort(403);
+        }
+
+        return response($collection, 200);
     }
 
     /**
@@ -75,9 +103,13 @@ class CollectionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Collection $collection)
     {
-        //
+        $user = Auth::user();
+
+        if ($user->cannot("update", $collection)) {
+            abort(403);
+        }
     }
 
     /**

@@ -20,12 +20,13 @@ Route::middleware(["auth:sanctum"])->get("/user", function (Request $request) {
 });
 
 Route::prefix("/collections")
-    ->middleware(["auth:sanctum"])
+    //->middleware(["auth:sanctum"])
     ->name("collections.")
     ->group(function () {
         Route::get("index", [CollectionController::class, "index"])->name("index");
-        Route::get("create", [CollectionController::class, "create"])->name("create");
         Route::post("store", [CollectionController::class, "store"])->name("store");
+        Route::get("user/{userID}", [CollectionController::class, "userCollections"])->name("user");
+        Route::get("usersingle/{user}/{collection}", [CollectionController::class, "userCollection"])->name("user_collection");
         Route::get("edit/{collection}", [CollectionController::class, "edit"])->name("edit");
         Route::post("update/{collection}", [CollectionController::class, "update"])->name("update");
         Route::post("destroy/{collection}", [CollectionController::class, "destroy"])->name("destroy");

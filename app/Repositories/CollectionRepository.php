@@ -11,4 +11,22 @@ class CollectionRepository
 
         return $collections;
     }
+
+    public function getUserCollections($userID)
+    {
+        $collections = Collection::where("user_id", $userID)
+            ->orderBy("title", "asc")
+            ->get();
+
+        return $collections;
+    }
+
+    public function getSingleCollection($collectionID)
+    {
+        $collections = Collection::where("id", $collectionID)
+            ->orderBy("title", "asc")
+            ->first();
+
+        return $collections;
+    }
 }

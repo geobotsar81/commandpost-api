@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use App\Repositories\CollectionRepository;
+use Illuminate\Http\Response;
 
 class CollectionController extends Controller
 {
@@ -15,12 +16,13 @@ class CollectionController extends Controller
     {
         $this->collectionRepo = $collectionRepo;
     }
+
     /**
-     * Display a listing of the resource.
+     * Display all Collections
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
         $collections = $this->collectionRepo->getAllCollections();
 
@@ -28,32 +30,12 @@ class CollectionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a user's Collections
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param integer $userID
+     * @return Response
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            "title" => ["required", "string", "max:50"],
-            "user_id" => ["required", "exists:users,id"],
-        ]);
-
-        $collection = Collection::create([
-            "title" => $request->title,
-            "user_id" => $request->user_id,
-        ]);
-
-        return response("Collection was successfully added", 200);
-    }
-
-    /**
-     * Display a listing of all user collections.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function userCollections(int $userID)
+    public function userCollections(int $userID): Response
     {
         $collections = $this->collectionRepo->getUserCollections($userID);
 
@@ -61,11 +43,13 @@ class CollectionController extends Controller
     }
 
     /**
-     * Display a single user collection.
+     * Display a user's Collection
      *
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @param Collection $collection
+     * @return Response
      */
-    public function userCollection(User $user, Collection $collection)
+    public function userCollection(User $user, Collection $collection): Response
     {
         if ($user->cannot("view", $collection)) {
             abort(403);
@@ -75,51 +59,64 @@ class CollectionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Save a Collection
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
-    public function show($id)
+    public function store(Request $request): Response
     {
-        //
+        $request->validate([
+            "title" => ["required", "string", "max:50"],
+            "user_id" => ["required", "exists:users,id"],
+        ]);
+
+        $this->collectionRepo->saveCollection($request["title"], $request["user_id"]);
+
+        return response("Collection was successfully added", 200);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update a Collection
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Collection $collection
+     * @return Response
      */
-    public function edit($id)
+    public function update(Request $request, Collection $collection): Response
     {
-        //
-    }
+        $request->validate([
+            "title" => ["required", "string", "max:50"],
+            "user_id" => ["required", "exists:users,id"],
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Collection $collection)
-    {
-        $user = Auth::user();
+        $user = User::where("id", $request["user_id"])->firstOrFail();
 
         if ($user->cannot("update", $collection)) {
             abort(403);
         }
+
+        $this->collectionRepo->updateCollection($request["title"], $collection);
+
+        return response("Collection was successfully updated", 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a Collection
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Collection $collection
+     * @return void
      */
-    public function destroy($id)
+    public function destroy(Request $request, Collection $collection)
     {
-        //
+        $user = User::where("id", $request["user_id"])->firstOrFail();
+        if ($user->cannot("delete", $collection)) {
+            abort(403);
+        }
+
+        $collection->delete();
+        $collections = $this->collectionRepo->getUserCollections($user->id);
+        return response($collections, 200);
     }
 }

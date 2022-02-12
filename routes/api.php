@@ -25,8 +25,8 @@ Route::prefix("/collections")
     ->group(function () {
         Route::get("index", [CollectionController::class, "index"])->name("index");
         Route::post("store", [CollectionController::class, "store"])->name("store");
-        Route::get("user/{userID}", [CollectionController::class, "userCollections"])->name("user");
-        Route::get("usersingle/{user}/{collection}", [CollectionController::class, "userCollection"])->name("user_collection");
+        Route::get("users/{userID}", [CollectionController::class, "userCollections"])->name("user");
+        Route::get("users/{user}/{collection}", [CollectionController::class, "userCollection"])->name("user_collection");
         Route::get("edit/{collection}", [CollectionController::class, "edit"])->name("edit");
         Route::post("update/{collection}", [CollectionController::class, "update"])->name("update");
         Route::post("destroy/{collection}", [CollectionController::class, "destroy"])->name("destroy");

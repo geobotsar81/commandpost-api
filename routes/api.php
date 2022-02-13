@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\CollectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommandController;
+use App\Http\Controllers\CollectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,17 @@ Route::prefix("/collections")
         Route::get("edit/{collection}", [CollectionController::class, "edit"])->name("edit");
         Route::post("update/{collection}", [CollectionController::class, "update"])->name("update");
         Route::post("destroy/{collection}", [CollectionController::class, "destroy"])->name("destroy");
+    });
+
+Route::prefix("/commands")
+    //->middleware(["auth:sanctum"])
+    ->name("commands.")
+    ->group(function () {
+        Route::get("index", [CommandController::class, "index"])->name("index");
+        Route::post("store", [CommandController::class, "store"])->name("store");
+        Route::get("users/{userID}", [CommandController::class, "userCommands"])->name("user");
+        Route::get("users/{user}/{command}", [CommandController::class, "userCommand"])->name("user_command");
+        Route::get("edit/{command}", [CommandController::class, "edit"])->name("edit");
+        Route::post("update/{command}", [CommandController::class, "update"])->name("update");
+        Route::post("destroy/{command}", [CommandController::class, "destroy"])->name("destroy");
     });

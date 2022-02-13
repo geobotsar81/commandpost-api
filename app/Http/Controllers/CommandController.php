@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Repositories\CollectionRepository;
+use App\Http\Repositories\CommandRepository;
 
 class CommandController extends Controller
 {
-    protected $collectionRepo;
+    protected $commandRepo;
 
-    public function __construct(CollectionRepository $collectionRepo)
+    public function __construct(CommandRepository $commandRepo)
     {
-        $this->$collectionRepo = $collectionRepo;
+        $this->$commandRepo = $commandRepo;
     }
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class CommandController extends Controller
      */
     public function index()
     {
-        return $this->collectionRepo->getAllCollections();
+        return $this->commandRepo->getAllCommands();
     }
 
     /**

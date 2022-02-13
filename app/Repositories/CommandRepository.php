@@ -21,11 +21,12 @@ class CommandRepository
      * @param integer $userID
      * @return Command
      */
-    public function saveCommand(string $title, int $userID): Command
+    public function saveCommand(string $command, string $description, int $collectionID): Command
     {
         $command = Command::create([
-            "title" => $title,
-            "user_id" => $userID,
+            "command" => $command,
+            "description" => $description,
+            "collection_id" => $collectionID,
         ]);
 
         return $command;
@@ -38,9 +39,11 @@ class CommandRepository
      * @param Command $command
      * @return Command
      */
-    public function updateCommand(string $title, Command $command): Command
+    public function updateCommand(string $commandCode, string $description, int $collectionID, Command $command): Command
     {
-        $command->title = $title;
+        $command->command = $commandCode;
+        $command->description = $description;
+        $command->collection_id = $collectionID;
         $command->save();
 
         return $command;
@@ -67,8 +70,10 @@ class CommandRepository
     public function getUserCommands($userID): EloquentCollection
     {
         $commands = Cache::remember("userCommands." . $userID, $this->cacheDuration, function () use ($userID) {
-            $commands = Command::where("user_id", $userID)
-                ->orderBy("title", "asc")
+            $commands = Command::whereHas("collection", function ($q) use ($userID) {
+                $q->where("user_id", "=", $userID);
+            })
+                ->orderBy("command", "asc")
                 ->get();
 
             return $commands;

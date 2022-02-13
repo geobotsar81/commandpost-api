@@ -64,6 +64,6 @@ class CommandObserver
 
     public function clearCommandsCache($command)
     {
-        Cache::forget("userCommands." . $command->user_id);
+        Cache::forget("userCommands." . $command->collection->user_id);
     }
 }

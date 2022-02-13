@@ -96,9 +96,9 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $this->collectionRepo->updateCollection($request["title"], $collection);
+        $collection = $this->collectionRepo->updateCollection($request["title"], $collection);
 
-        return response("Collection was successfully updated", 200);
+        return response($collection, 200);
     }
 
     /**

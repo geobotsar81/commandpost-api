@@ -2,10 +2,18 @@
 namespace App\Repositories;
 
 use App\Models\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class CollectionRepository
 {
+    protected $cacheDuration;
+
+    public function __construct()
+    {
+        $this->cacheDuration = config("cache.duration");
+    }
+
     /**
      * Save a Collection in Database
      *
@@ -58,9 +66,13 @@ class CollectionRepository
      */
     public function getUserCollections($userID): EloquentCollection
     {
-        $collections = Collection::where("user_id", $userID)
-            ->orderBy("title", "asc")
-            ->get();
+        $collections = Cache::remember("userCollections." . $userID, $this->cacheDuration, function () use ($userID) {
+            $collections = Collection::where("user_id", $userID)
+                ->orderBy("title", "asc")
+                ->get();
+
+            return $collections;
+        });
 
         return $collections;
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CollectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+Route::middleware(["auth:sanctum"])->get("/user", function (Request $request) {
     return $request->user();
 });
+
+Route::prefix("/collections")
+    //->middleware(["auth:sanctum"])
+    ->name("collections.")
+    ->group(function () {
+        Route::get("index", [CollectionController::class, "index"])->name("index");
+        Route::post("store", [CollectionController::class, "store"])->name("store");
+        Route::get("users/{userID}", [CollectionController::class, "userCollections"])->name("user");
+        Route::get("users/{user}/{collection}", [CollectionController::class, "userCollection"])->name("user_collection");
+        Route::get("edit/{collection}", [CollectionController::class, "edit"])->name("edit");
+        Route::post("update/{collection}", [CollectionController::class, "update"])->name("update");
+        Route::post("destroy/{collection}", [CollectionController::class, "destroy"])->name("destroy");
+    });

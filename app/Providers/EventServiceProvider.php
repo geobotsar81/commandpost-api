@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Command;
 use App\Models\Collection;
+use App\Observers\CommandObserver;
 use App\Observers\CollectionObserver;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,5 +29,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Collection::observe(CollectionObserver::class);
+        Command::observe(CommandObserver::class);
     }
 }

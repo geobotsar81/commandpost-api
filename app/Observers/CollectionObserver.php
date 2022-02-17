@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class CollectionObserver

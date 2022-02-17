@@ -2,90 +2,139 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Command;
+use App\Models\Collection;
 use Illuminate\Http\Request;
-use App\Http\Repositories\CollectionRepository;
+use Illuminate\Http\Response;
+use App\Repositories\CommandRepository;
 
 class CommandController extends Controller
 {
-    protected $collectionRepo;
+    protected $commandRepo;
 
-    public function __construct(CollectionRepository $collectionRepo)
+    public function __construct(CommandRepository $commandRepo)
     {
-        $this->$collectionRepo = $collectionRepo;
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return $this->collectionRepo->getAllCollections();
+        $this->commandRepo = $commandRepo;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display all Commands
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function create()
+    public function index(): Response
     {
-        //
+        $commands = $this->commandRepo->getAllCommands();
+
+        return response($commands, 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a user's Commands
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param integer $userID
+     * @return Response
      */
-    public function store(Request $request)
+    public function userCommands(int $userID): Response
     {
-        //
+        $commands = $this->commandRepo->getUserCommands($userID);
+
+        return response($commands, 200);
     }
 
     /**
-     * Display the specified resource.
+     * Display a user's Command
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @param Command $command
+     * @return Response
      */
-    public function show($id)
+    public function userCommand(User $user, Command $command): Response
     {
-        //
+        if ($user->cannot("view", $command)) {
+            abort(403);
+        }
+
+        return response($command, 200);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display a Collection's Commands
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param integer $userID
+     * @return Response
      */
-    public function edit($id)
+    public function collectionCommands(User $user, Collection $collection): Response
     {
-        //
+        if ($user->cannot("view", $collection)) {
+            abort(403);
+        }
+
+        return response($collection->commands, 200);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Save a Command
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function store(Request $request): Response
     {
-        //
+        $request->validate([
+            "command" => ["required", "string", "max:255"],
+            "description" => ["nullable", "string", "max:50"],
+            "collection" => ["required", "exists:collections,id"],
+        ]);
+
+        $this->commandRepo->saveCommand($request["command"], $request["description"], $request["collection"]);
+
+        return response("Command was successfully added", 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update a Command
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Command $command
+     * @return Response
      */
-    public function destroy($id)
+    public function update(Request $request, Command $command): Response
     {
-        //
+        $request->validate([
+            "command" => ["required", "string", "max:255"],
+            "description" => ["nullable", "string", "max:50"],
+            "collection" => ["required", "exists:collections,id"],
+        ]);
+
+        $user = User::where("id", $request["user_id"])->firstOrFail();
+
+        if ($user->cannot("update", $command)) {
+            abort(403);
+        }
+
+        $command = $this->commandRepo->updateCommand($request["command"], $request["description"], $request["collection"], $command);
+
+        return response($command, 200);
+    }
+
+    /**
+     * Delete a Command
+     *
+     * @param Request $request
+     * @param Command $command
+     * @return void
+     */
+    public function destroy(Request $request, Command $command)
+    {
+        $user = User::where("id", $request["userID"])->firstOrFail();
+        if ($user->cannot("delete", $command)) {
+            abort(403);
+        }
+
+        $command->delete();
+        $commands = $this->commandRepo->getUserCommands($user->id);
+        return response($commands, 200);
     }
 }

@@ -110,7 +110,7 @@ class CollectionController extends Controller
      */
     public function destroy(Request $request, Collection $collection)
     {
-        $user = User::where("id", $request["user_id"])->firstOrFail();
+        $user = User::where("id", $request["userID"])->firstOrFail();
         if ($user->cannot("delete", $collection)) {
             abort(403);
         }

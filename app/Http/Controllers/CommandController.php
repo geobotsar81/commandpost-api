@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Command;
+use App\Models\Collection;
 use Illuminate\Http\Request;
-use App\Repositories\CommandRepository;
 use Illuminate\Http\Response;
+use App\Repositories\CommandRepository;
 
 class CommandController extends Controller
 {
@@ -56,6 +57,21 @@ class CommandController extends Controller
         }
 
         return response($command, 200);
+    }
+
+    /**
+     * Display a Collection's Commands
+     *
+     * @param integer $userID
+     * @return Response
+     */
+    public function collectionCommands(User $user, Collection $collection): Response
+    {
+        if ($user->cannot("view", $collection)) {
+            abort(403);
+        }
+
+        return response($collection->commands, 200);
     }
 
     /**
@@ -112,7 +128,7 @@ class CommandController extends Controller
      */
     public function destroy(Request $request, Command $command)
     {
-        $user = User::where("id", $request["user_id"])->firstOrFail();
+        $user = User::where("id", $request["userID"])->firstOrFail();
         if ($user->cannot("delete", $command)) {
             abort(403);
         }

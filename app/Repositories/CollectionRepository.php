@@ -40,8 +40,9 @@ class CollectionRepository
      */
     public function updateCollection(string $title, Collection $collection): Collection
     {
-        $collection->title = $title;
-        $collection->save();
+        $collection->update([
+            "title" => $title,
+        ]);
 
         return $collection;
     }
@@ -68,6 +69,7 @@ class CollectionRepository
     {
         $collections = Cache::remember("userCollections." . $userID, $this->cacheDuration, function () use ($userID) {
             $collections = Collection::where("user_id", $userID)
+                ->with("commands")
                 ->orderBy("title", "asc")
                 ->get();
 

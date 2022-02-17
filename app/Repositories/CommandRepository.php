@@ -21,11 +21,11 @@ class CommandRepository
      * @param integer $userID
      * @return Command
      */
-    public function saveCommand(string $command, string $description, int $collectionID): Command
+    public function saveCommand(string $command, ?string $description, int $collectionID): Command
     {
         $command = Command::create([
             "command" => $command,
-            "description" => $description,
+            "description" => $description ?? null,
             "collection_id" => $collectionID,
         ]);
 
@@ -39,12 +39,13 @@ class CommandRepository
      * @param Command $command
      * @return Command
      */
-    public function updateCommand(string $commandCode, string $description, int $collectionID, Command $command): Command
+    public function updateCommand(string $commandCode, ?string $description, int $collectionID, Command $command): Command
     {
-        $command->command = $commandCode;
-        $command->description = $description;
-        $command->collection_id = $collectionID;
-        $command->save();
+        $command->update([
+            "command" => $commandCode,
+            "description" => $description ?? null,
+            "collection_id" => $collectionID,
+        ]);
 
         return $command;
     }
@@ -73,6 +74,7 @@ class CommandRepository
             $commands = Command::whereHas("collection", function ($q) use ($userID) {
                 $q->where("user_id", "=", $userID);
             })
+                ->with("collection")
                 ->orderBy("command", "asc")
                 ->get();
 

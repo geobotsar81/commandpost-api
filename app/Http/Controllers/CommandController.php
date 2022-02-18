@@ -23,9 +23,11 @@ class CommandController extends Controller
      *
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $commands = $this->commandRepo->getAllCommands();
+        $search = $request["search"];
+        $sort = $request["sort"];
+        $commands = $this->commandRepo->getPaginatedCommands($search, $sort);
 
         return response($commands, 200);
     }

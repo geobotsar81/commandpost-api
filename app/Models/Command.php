@@ -43,7 +43,7 @@ class Command extends Model
     }
 
     /**
-     * Sort by year
+     * Sort by date
      *
      * @param [type] $query
      * @return Builder
@@ -51,5 +51,16 @@ class Command extends Model
     public function scopeSortByDate($query): Builder
     {
         return $query->orderBy("created_at", "desc");
+    }
+
+    /**
+     * Sort by title
+     *
+     * @param [type] $query
+     * @return Builder
+     */
+    public function scopeSortByTitle($query): Builder
+    {
+        return $query->orderBy("command", "asc");
     }
 }

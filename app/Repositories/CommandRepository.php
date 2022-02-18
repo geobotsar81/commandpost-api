@@ -76,19 +76,13 @@ class CommandRepository
                 $commands = Command::with(["collection"])
                     ->where("command", "LIKE", "%{$search}%")
                     ->sortByDate()
-                    ->paginate(5);
+                    ->paginate(8);
                 break;
             case 2:
                 $commands = Command::with(["collection"])
                     ->where("command", "LIKE", "%{$search}%")
-                    ->sortByDate()
-                    ->paginate(5);
-                break;
-            case 3:
-                $commands = Command::with(["collection"])
-                    ->where("command", "LIKE", "%{$search}%")
-                    ->sortByDate()
-                    ->paginate(5);
+                    ->sortByTitle()
+                    ->paginate(8);
                 break;
         }
 

@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class CommandRepository
@@ -58,6 +59,38 @@ class CommandRepository
     public function getAllCommands(): EloquentCollection
     {
         $commands = Command::orderBy("title", "asc")->get();
+
+        return $commands;
+    }
+
+    /**
+     * Get a paginated list of commands
+     *
+     * @param String $search
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedCommands(?string $search, int $sort): LengthAwarePaginator
+    {
+        switch ($sort) {
+            case 1:
+                $commands = Command::with(["collection"])
+                    ->where("command", "LIKE", "%{$search}%")
+                    ->sortByDate()
+                    ->paginate(5);
+                break;
+            case 2:
+                $commands = Command::with(["collection"])
+                    ->where("command", "LIKE", "%{$search}%")
+                    ->sortByDate()
+                    ->paginate(5);
+                break;
+            case 3:
+                $commands = Command::with(["collection"])
+                    ->where("command", "LIKE", "%{$search}%")
+                    ->sortByDate()
+                    ->paginate(5);
+                break;
+        }
 
         return $commands;
     }

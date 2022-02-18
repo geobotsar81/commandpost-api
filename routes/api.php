@@ -38,7 +38,7 @@ Route::prefix("/commands")
     //->middleware(["auth:sanctum"])
     ->name("commands.")
     ->group(function () {
-        Route::get("index", [CommandController::class, "index"])->name("index");
+        Route::post("index", [CommandController::class, "index"])->name("index");
         Route::post("store", [CommandController::class, "store"])->name("store");
         Route::get("users/{userID}", [CommandController::class, "userCommands"])->name("user");
         Route::get("users/{user}/{command}", [CommandController::class, "userCommand"])->name("user_command");

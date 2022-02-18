@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Command extends Model
@@ -18,12 +19,7 @@ class Command extends Model
      *
      * @var string[]
      */
-    protected $fillable = [
-        "command",
-        "user_id",
-        "collection_id",
-        "description",
-    ];
+    protected $fillable = ["command", "user_id", "collection_id", "description"];
 
     /**
      * The collection this command belongs to
@@ -42,9 +38,18 @@ class Command extends Model
      */
     public function getFormatedCreatedAttribute(): string
     {
-        $formated_date = \Carbon\Carbon::createFromTimeStamp(
-            strtotime($this->created_at)
-        )->diffForHumans();
+        $formated_date = \Carbon\Carbon::createFromTimeStamp(strtotime($this->created_at))->diffForHumans();
         return $formated_date;
+    }
+
+    /**
+     * Sort by year
+     *
+     * @param [type] $query
+     * @return Builder
+     */
+    public function scopeSortByDate($query): Builder
+    {
+        return $query->orderBy("created_at", "desc");
     }
 }

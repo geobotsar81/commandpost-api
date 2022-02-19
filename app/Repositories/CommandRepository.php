@@ -69,7 +69,7 @@ class CommandRepository
      * @param String $search
      * @return LengthAwarePaginator
      */
-    public function getPaginatedCommands(?string $search, int $sort): LengthAwarePaginator
+    public function getPaginatedCommands(?string $search, int $sort): ?LengthAwarePaginator
     {
         switch ($sort) {
             case 1:

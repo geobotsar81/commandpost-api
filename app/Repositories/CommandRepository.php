@@ -71,20 +71,33 @@ class CommandRepository
      */
     public function getPaginatedCommands(?string $search, int $sort): ?LengthAwarePaginator
     {
+        $sortOptions = [];
         switch ($sort) {
             case 1:
-                $commands = Command::with(["collection"])
-                    ->where("command", "LIKE", "%{$search}%")
-                    ->sortByDate()
-                    ->paginate(8);
+                $sortOptions["field"] = "command";
+                $sortOptions["order"] = "asc";
                 break;
             case 2:
-                $commands = Command::with(["collection"])
-                    ->where("command", "LIKE", "%{$search}%")
-                    ->sortByTitle()
-                    ->paginate(8);
+                $sortOptions["field"] = "command";
+                $sortOptions["order"] = "desc";
+                break;
+            case 3:
+                $sortOptions["field"] = "created_at";
+                $sortOptions["order"] = "asc";
+                break;
+            case 4:
+                $sortOptions["field"] = "created_at";
+                $sortOptions["order"] = "desc";
                 break;
         }
+
+        $commands = Command::with(["collection"])
+            ->where("command", "LIKE", "%{$search}%")
+            ->orWhereHas("collection", function ($q) use ($search) {
+                $q->where("title", "LIKE", "%{$search}%");
+            })
+            ->orderBy($sortOptions["field"], $sortOptions["order"])
+            ->paginate(8);
 
         return $commands;
     }

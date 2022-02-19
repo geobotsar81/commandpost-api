@@ -16,12 +16,16 @@ use App\Http\Controllers\CollectionController;
 |
 */
 
+Route::get("/test", function () {
+    return "test";
+});
+
 Route::middleware(["auth:sanctum"])->get("/user", function (Request $request) {
     return $request->user();
 });
 
 Route::prefix("/collections")
-    //->middleware(["auth:sanctum"])
+    ->middleware(["auth:sanctum"])
     ->name("collections.")
     ->group(function () {
         Route::get("index", [CollectionController::class, "index"])->name("index");
@@ -35,10 +39,15 @@ Route::prefix("/collections")
     });
 
 Route::prefix("/commands")
-    //->middleware(["auth:sanctum"])
     ->name("commands.")
     ->group(function () {
         Route::post("index", [CommandController::class, "index"])->name("index");
+    });
+
+Route::prefix("/commands")
+    ->middleware(["auth:sanctum"])
+    ->name("commands.")
+    ->group(function () {
         Route::post("store", [CommandController::class, "store"])->name("store");
         Route::get("users/{userID}", [CommandController::class, "userCommands"])->name("user");
         Route::get("users/{user}/{command}", [CommandController::class, "userCommand"])->name("user_command");

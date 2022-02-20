@@ -16,8 +16,8 @@ class CreateCommandsTable extends Migration
         Schema::create("commands", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("collection_id");
-            $table->string("description")->nullable();
-            $table->string("command");
+            $table->string("description", 150)->nullable();
+            $table->string("command", 150)->index();
             $table
                 ->foreign("collection_id")
                 ->references("id")

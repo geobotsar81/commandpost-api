@@ -72,8 +72,8 @@ class CollectionController extends Controller
         ]);
 
         $this->collectionRepo->saveCollection($request["title"], $request["user_id"]);
-
-        return response("Collection was successfully added", 200);
+        $collections = $this->collectionRepo->getUserCollections($request["user_id"]);
+        return response($collections, 200);
     }
 
     /**

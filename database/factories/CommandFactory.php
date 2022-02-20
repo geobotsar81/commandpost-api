@@ -13,16 +13,7 @@ class CommandFactory extends Factory
      */
     public function definition()
     {
-        $commands = [
-            "php artisan server",
-            "php artisan test",
-            "php artisan db:seed",
-            "php artisan migrate",
-            "npm install",
-            "npm run dev",
-            "npm run production",
-            "npm run build",
-        ];
+        $commands = ["php artisan serve", "php artisan test", "php artisan db:seed", "php artisan migrate", "npm install", "npm run dev", "npm run production", "npm run build"];
         $randomNumber = $this->faker->numberBetween(0, 7);
         $command = $commands[$randomNumber];
 

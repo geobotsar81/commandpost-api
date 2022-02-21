@@ -67,13 +67,17 @@ class CommandController extends Controller
      * @param integer $userID
      * @return Response
      */
-    public function collectionCommands(User $user, Collection $collection): Response
+    public function collectionCommands(Request $request, Collection $collection): Response
     {
+        $search = $request["search"];
+        $sort = $request["sort"];
+        $user = User::where("id", $request["userID"])->first();
+
         if ($user->cannot("view", $collection)) {
             abort(403);
         }
-
-        return response($collection->commands, 200);
+        $commands = $this->commandRepo->getPaginatedCommands($search, $sort, $collection->id);
+        return response($commands, 200);
     }
 
     /**

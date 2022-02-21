@@ -69,7 +69,7 @@ class CommandRepository
      * @param String $search
      * @return LengthAwarePaginator
      */
-    public function getPaginatedCommands(?string $search, int $sort): ?LengthAwarePaginator
+    public function getPaginatedCommands(?string $search, int $sort, ?int $collectionID = null): ?LengthAwarePaginator
     {
         $sortOptions = [];
         switch ($sort) {
@@ -91,13 +91,20 @@ class CommandRepository
                 break;
         }
 
-        $commands = Command::with(["collection"])
-            ->where("command", "LIKE", "%{$search}%")
-            ->orWhereHas("collection", function ($q) use ($search) {
+        //Common Part
+        $commands = Command::with(["collection"])->where(function ($query) use ($search) {
+            $query->where("command", "LIKE", "%{$search}%")->orWhereHas("collection", function ($q) use ($search) {
                 $q->where("title", "LIKE", "%{$search}%");
-            })
-            ->orderBy($sortOptions["field"], $sortOptions["order"])
-            ->paginate(8);
+            });
+        });
+
+        //Filter by collection ID
+        if (!empty($collectionID)) {
+            $commands = $commands->where("collection_id", $collectionID);
+        }
+
+        //Sort and Paginate
+        $commands = $commands->orderBy($sortOptions["field"], $sortOptions["order"])->paginate(8);
 
         return $commands;
     }

@@ -47,7 +47,7 @@ Route::prefix("/commands")
         Route::post("store", [CommandController::class, "store"])->name("store");
         Route::get("users/{userID}", [CommandController::class, "userCommands"])->name("user");
         Route::get("users/{user}/{command}", [CommandController::class, "userCommand"])->name("user_command");
-        Route::get("collection/{user}/{collection}", [CommandController::class, "collectionCommands"])->name("collection_commands");
+        Route::post("collection/{collection}", [CommandController::class, "collectionCommands"])->name("collection_commands");
         Route::get("edit/{command}", [CommandController::class, "edit"])->name("edit");
         Route::post("update/{command}", [CommandController::class, "update"])->name("update");
         Route::post("destroy/{command}", [CommandController::class, "destroy"])->name("destroy");

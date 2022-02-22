@@ -93,10 +93,9 @@ class CommandController extends Controller
             "description" => ["nullable", "string", "max:50"],
             "collection" => ["required", "exists:collections,id"],
         ]);
-
         $this->commandRepo->saveCommand($request["command"], $request["description"], $request["collection"]);
-
-        return response("Command was successfully added", 200);
+        $commands = $this->commandRepo->getPaginatedCommands("", 4);
+        return response($commands, 200);
     }
 
     /**

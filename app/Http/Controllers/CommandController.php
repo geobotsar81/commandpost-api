@@ -120,8 +120,8 @@ class CommandController extends Controller
         }
 
         $command = $this->commandRepo->updateCommand($request["command"], $request["description"], $request["collection"], $command);
-
-        return response($command, 200);
+        $commands = $this->commandRepo->getPaginatedCommands("", 4);
+        return response($commands, 200);
     }
 
     /**
@@ -139,7 +139,7 @@ class CommandController extends Controller
         }
 
         $command->delete();
-        $commands = $this->commandRepo->getUserCommands($user->id);
+        $commands = $this->commandRepo->getPaginatedCommands("", 4);
         return response($commands, 200);
     }
 }

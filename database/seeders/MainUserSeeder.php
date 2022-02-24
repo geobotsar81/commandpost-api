@@ -28,7 +28,7 @@ class MainUserSeeder extends Seeder
 
         $collections = ["PHP", "Git", "NPM", "Linux", "Laravel", "VueJS"];
 
-        $commands["Laravel"] = ["php artisan serve", "php artisan test", "php artisan db:seed", "php artisan migrate"];
+        $commands["Laravel"] = ["php artisan db:wipe && php artisan migrate && php artisan db:seed", "php artisan serve", "php artisan test", "php artisan db:seed", "php artisan migrate"];
         $commands["NPM"] = ["npm install", "npm run dev", "npm run production", "npm run build"];
         $commands["Linux"] = ["ls", "cat", "touch"];
         $commands["Git"] = ["git init", "git remote update", "git remote add origin"];

@@ -97,8 +97,9 @@ class CollectionController extends Controller
         }
 
         $collection = $this->collectionRepo->updateCollection($request["title"], $collection);
+        $collections = $this->collectionRepo->getUserCollections($request["user_id"]);
 
-        return response($collection, 200);
+        return response($collections, 200);
     }
 
     /**

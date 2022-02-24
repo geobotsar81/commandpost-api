@@ -14,7 +14,7 @@ return [
     |
     */
 
-    "paths" => ["api/*", "/login", "/logout", "/register", "/sanctum/csrf-cookie"],
+    "paths" => ["/", "api/*", "/commands/index", "/login", "/logout", "/register", "/sanctum/csrf-cookie"],
 
     "allowed_methods" => ["*"],
 
@@ -24,7 +24,8 @@ return [
 
     "allowed_headers" => ["*"],
 
-    "exposed_headers" => [],
+    #'exposed_headers' => ['XSRF-TOKEN', 'X-XSRF-TOKEN'],
+    "exposed_headers" => ["XSRF-TOKEN"],
 
     "max_age" => 0,
 

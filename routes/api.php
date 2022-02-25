@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommandController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CollectionController;
 
 /*
@@ -16,6 +17,13 @@ use App\Http\Controllers\CollectionController;
 |
 */
 
+//Unauthenticated routes
+Route::get("/collections/{collection}", [CollectionController::class, "collection"])->name("collections.collection");
+Route::post("/commands/index", [CommandController::class, "index"])->name("commands.index");
+Route::post("/commands/collection/{collection}", [CommandController::class, "collectionCommands"])->name("commands.collection_commands");
+Route::post("/contact", [ContactController::class, "sendMail"])->name("send-mail");
+
+//Authenticated routes
 Route::middleware(["auth:sanctum"])->get("/user", function (Request $request) {
     return $request->user();
 });
@@ -35,19 +43,12 @@ Route::prefix("/collections")
     });
 
 Route::prefix("/commands")
-    ->name("commands.")
-    ->group(function () {
-        Route::post("index", [CommandController::class, "index"])->name("index");
-    });
-
-Route::prefix("/commands")
     ->middleware(["auth:sanctum"])
     ->name("commands.")
     ->group(function () {
         Route::post("store", [CommandController::class, "store"])->name("store");
         Route::get("users/{userID}", [CommandController::class, "userCommands"])->name("user");
         Route::get("users/{user}/{command}", [CommandController::class, "userCommand"])->name("user_command");
-        Route::post("collection/{collection}", [CommandController::class, "collectionCommands"])->name("collection_commands");
         Route::get("edit/{command}", [CommandController::class, "edit"])->name("edit");
         Route::post("update/{command}", [CommandController::class, "update"])->name("update");
         Route::post("destroy/{command}", [CommandController::class, "destroy"])->name("destroy");

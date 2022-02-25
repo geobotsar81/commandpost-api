@@ -71,11 +71,11 @@ class CommandController extends Controller
     {
         $search = $request["search"];
         $sort = $request["sort"];
-        $user = User::where("id", $request["userID"])->first();
+        /*$user = User::where("id", $request["userID"])->first();
 
         if ($user->cannot("view", $collection)) {
             abort(403);
-        }
+        }*/
         $commands = $this->commandRepo->getPaginatedCommands($search, $sort, $collection->id);
         return response($commands, 200);
     }

@@ -59,6 +59,17 @@ class CollectionController extends Controller
     }
 
     /**
+     * Display a  Collection
+     *
+     * @param Collection $collection
+     * @return Response
+     */
+    public function collection(Collection $collection): Response
+    {
+        return response($collection, 200);
+    }
+
+    /**
      * Save a Collection
      *
      * @param Request $request

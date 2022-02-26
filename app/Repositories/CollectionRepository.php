@@ -70,11 +70,35 @@ class CollectionRepository
         $collections = Cache::remember("userCollections." . $userID, $this->cacheDuration, function () use ($userID) {
             $collections = Collection::where("user_id", $userID)
                 ->with("commands")
-                ->orderBy("title", "asc")
+                ->orderBy("order", "asc")
                 ->get();
 
             return $collections;
         });
+
+        return $collections;
+    }
+
+    /**
+     * Sort user's Collections
+     *
+     * @param [type] $userID
+     * @return EloquentCollection
+     */
+    public function sortUserCollections($userID, $sortedCollections): EloquentCollection
+    {
+        if (!empty($sortedCollections)) {
+            $index = 0;
+            foreach ($sortedCollections as $currentCollection) {
+                $index++;
+                $collection = Collection::where("id", $currentCollection["id"])->first();
+                $collection->update([
+                    "order" => $index,
+                ]);
+            }
+        }
+
+        $collections = $this->getUserCollections($userID);
 
         return $collections;
     }

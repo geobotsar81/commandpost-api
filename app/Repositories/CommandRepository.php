@@ -72,6 +72,8 @@ class CommandRepository
     public function getPaginatedCommands(?string $search, int $sort, ?int $collectionID = null): ?LengthAwarePaginator
     {
         $sortOptions = [];
+        $paginate = 8;
+
         switch ($sort) {
             case 1:
                 $sortOptions["field"] = "command";
@@ -89,6 +91,14 @@ class CommandRepository
                 $sortOptions["field"] = "created_at";
                 $sortOptions["order"] = "desc";
                 break;
+            case 5:
+                $sortOptions["field"] = "order";
+                $sortOptions["order"] = "asc";
+                break;
+            case 6:
+                $sortOptions["field"] = "order";
+                $sortOptions["order"] = "desc";
+                break;
         }
 
         //Common Part
@@ -101,10 +111,35 @@ class CommandRepository
         //Filter by collection ID
         if (!empty($collectionID)) {
             $commands = $commands->where("collection_id", $collectionID);
+            $paginate = 100;
         }
 
         //Sort and Paginate
-        $commands = $commands->orderBy($sortOptions["field"], $sortOptions["order"])->paginate(8);
+        $commands = $commands->orderBy($sortOptions["field"], $sortOptions["order"])->paginate($paginate);
+
+        return $commands;
+    }
+
+    /**
+     * Sort user's Commands
+     *
+     * @param [type] $collectionID
+     * @return EloquentCollection
+     */
+    public function sortCollectionCommands($collectionID, $sortedCommands): ?LengthAwarePaginator
+    {
+        if (!empty($sortedCommands)) {
+            $index = 0;
+            foreach ($sortedCommands as $currentCommand) {
+                $index++;
+                $command = Command::where("id", $currentCommand["id"])->first();
+                $command->update([
+                    "order" => $index,
+                ]);
+            }
+        }
+
+        $commands = $this->getPaginatedCommands("", 5, $collectionID);
 
         return $commands;
     }

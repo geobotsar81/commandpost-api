@@ -43,6 +43,19 @@ class CollectionController extends Controller
     }
 
     /**
+     * Sort a user's Collections
+     *
+     * @param integer $userID
+     * @return Response
+     */
+    public function sortCollections(int $userID, Request $request): Response
+    {
+        $collections = $this->collectionRepo->sortUserCollections($userID, $request["collections"]);
+
+        return response($collections, 200);
+    }
+
+    /**
      * Display a user's Collection
      *
      * @param User $user

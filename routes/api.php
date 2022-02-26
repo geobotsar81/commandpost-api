@@ -36,6 +36,7 @@ Route::prefix("/collections")
         Route::post("store", [CollectionController::class, "store"])->name("store");
         Route::get("users/{userID}", [CollectionController::class, "userCollections"])->name("user");
         Route::get("users/{user}/{collection}", [CollectionController::class, "userCollection"])->name("user_collection");
+        Route::post("sort/{userID}", [CollectionController::class, "sortCollections"])->name("sort");
 
         Route::get("edit/{collection}", [CollectionController::class, "edit"])->name("edit");
         Route::post("update/{collection}", [CollectionController::class, "update"])->name("update");
@@ -47,6 +48,7 @@ Route::prefix("/commands")
     ->name("commands.")
     ->group(function () {
         Route::post("store", [CommandController::class, "store"])->name("store");
+        Route::post("sort/{collectionID}", [CommandController::class, "sortCollectionCommands"])->name("sort");
         Route::get("users/{userID}", [CommandController::class, "userCommands"])->name("user");
         Route::get("users/{user}/{command}", [CommandController::class, "userCommand"])->name("user_command");
         Route::get("edit/{command}", [CommandController::class, "edit"])->name("edit");

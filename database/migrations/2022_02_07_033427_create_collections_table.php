@@ -17,6 +17,11 @@ class CreateCollectionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger("user_id");
             $table->string("title", 50)->index();
+            $table->integer("order")->default(0);
+            $table
+                ->integer("views")
+                ->default(0)
+                ->index();
             $table
                 ->foreign("user_id")
                 ->references("id")

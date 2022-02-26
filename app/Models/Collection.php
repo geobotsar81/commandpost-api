@@ -18,7 +18,7 @@ class Collection extends Model
      *
      * @var string[]
      */
-    protected $fillable = ["title", "user_id"];
+    protected $fillable = ["title", "user_id", "order"];
 
     /**
      * The user this collection belongs to
@@ -47,9 +47,7 @@ class Collection extends Model
      */
     public function getFormatedCreatedAttribute(): string
     {
-        $formated_date = \Carbon\Carbon::createFromTimeStamp(
-            strtotime($this->created_at)
-        )->diffForHumans();
+        $formated_date = \Carbon\Carbon::createFromTimeStamp(strtotime($this->created_at))->diffForHumans();
         return $formated_date;
     }
 }

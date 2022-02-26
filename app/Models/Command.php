@@ -19,7 +19,7 @@ class Command extends Model
      *
      * @var string[]
      */
-    protected $fillable = ["command", "user_id", "collection_id", "description"];
+    protected $fillable = ["command", "user_id", "collection_id", "description", "order", "additions"];
 
     /**
      * The collection this command belongs to

@@ -81,6 +81,19 @@ class CommandController extends Controller
     }
 
     /**
+     * Sort a user's Commands
+     *
+     * @param integer $userID
+     * @return Response
+     */
+    public function sortCollectionCommands(int $collectionID, Request $request): Response
+    {
+        $commands = $this->commandRepo->sortCollectionCommands($collectionID, $request["commands"]);
+
+        return response($commands, 200);
+    }
+
+    /**
      * Save a Command
      *
      * @param Request $request

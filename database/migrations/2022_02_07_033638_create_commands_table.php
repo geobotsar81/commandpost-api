@@ -18,6 +18,11 @@ class CreateCommandsTable extends Migration
             $table->unsignedBigInteger("collection_id");
             $table->string("description", 150)->nullable();
             $table->string("command", 150)->index();
+            $table->integer("order")->default(0);
+            $table
+                ->integer("additions")
+                ->default(0)
+                ->index();
             $table
                 ->foreign("collection_id")
                 ->references("id")

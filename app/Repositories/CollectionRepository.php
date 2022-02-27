@@ -48,6 +48,22 @@ class CollectionRepository
     }
 
     /**
+     * Update a Collection's views in Database
+     *
+     * @param Collection $collection
+     * @return Collection
+     */
+    public function updateCollectionViews(Collection $collection): Collection
+    {
+        $views = $collection->views + 1;
+        $collection->update([
+            "views" => $views,
+        ]);
+
+        return $collection;
+    }
+
+    /**
      * Get all Collections from Database
      *
      * @return EloquentCollection

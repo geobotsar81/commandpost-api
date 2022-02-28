@@ -79,6 +79,7 @@ class CollectionController extends Controller
      */
     public function collection(Collection $collection): Response
     {
+        $collection = $this->collectionRepo->updateCollectionViews($collection);
         return response($collection, 200);
     }
 

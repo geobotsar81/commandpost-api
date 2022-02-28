@@ -18,7 +18,7 @@ class Collection extends Model
      *
      * @var string[]
      */
-    protected $fillable = ["title", "user_id", "order"];
+    protected $fillable = ["title", "user_id", "order", "views"];
 
     /**
      * The user this collection belongs to

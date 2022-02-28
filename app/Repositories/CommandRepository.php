@@ -51,6 +51,17 @@ class CommandRepository
         return $command;
     }
 
+    public function updateCommandAdditions(int $commandID): Command
+    {
+        $command = Command::where("id", $commandID)->first();
+        $additions = $command->additions + 1;
+        $command->update([
+            "additions" => $additions,
+        ]);
+
+        return $command;
+    }
+
     /**
      * Get all Commands from Database
      *

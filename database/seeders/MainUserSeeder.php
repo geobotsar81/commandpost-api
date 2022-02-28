@@ -24,6 +24,7 @@ class MainUserSeeder extends Seeder
             "created_at" => date("Y-m-d H:i:s", time()),
             "updated_at" => date("Y-m-d H:i:s", time()),
             "password" => bcrypt("commandpost1981"),
+            "theme" => 2,
         ]);
 
         $collections = ["PHP", "Git", "NPM", "Linux", "Laravel", "VueJS"];

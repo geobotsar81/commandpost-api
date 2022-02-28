@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Hashids\Hashids;
 use App\Models\Collection;
 use Illuminate\Http\Request;
-use App\Repositories\CollectionRepository;
 use Illuminate\Http\Response;
+use App\Repositories\CollectionRepository;
 
 class CollectionController extends Controller
 {
@@ -77,10 +78,21 @@ class CollectionController extends Controller
      * @param Collection $collection
      * @return Response
      */
-    public function collection(Collection $collection): Response
+    public function collection(string $encryptedID): Response
     {
-        $collection = $this->collectionRepo->updateCollectionViews($collection);
-        return response($collection, 200);
+        if (!empty($encryptedID)) {
+            $hashids = new Hashids("", 10);
+            $collectionID = $hashids->decode($encryptedID);
+            $collection = Collection::where("id", $collectionID[0])
+                ->with("user")
+                ->first();
+            if (!empty($collection)) {
+                $collection = $this->collectionRepo->updateCollectionViews($collection);
+                return response($collection, 200);
+            }
+        }
+
+        return response("", 404);
     }
 
     /**

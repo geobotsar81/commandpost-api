@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use Hashids\Hashids;
 use App\Models\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ class Collection extends Model
 {
     use HasFactory;
 
-    public $appends = ["formated_created"];
+    public $appends = ["formated_created", "encrypted_id"];
 
     /**
      * The attributes that are mass assignable.
@@ -49,5 +50,16 @@ class Collection extends Model
     {
         $formated_date = \Carbon\Carbon::createFromTimeStamp(strtotime($this->created_at))->diffForHumans();
         return $formated_date;
+    }
+
+    /**
+     * Generate a uuid
+     *
+     * @return string
+     */
+    public function getEncryptedIdAttribute(): string
+    {
+        $hashids = new Hashids("", 10);
+        return $hashids->encode($this->id);
     }
 }

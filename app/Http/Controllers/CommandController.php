@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Hashids\Hashids;
 use App\Models\Command;
 use App\Models\Collection;
 use Illuminate\Http\Request;
@@ -67,17 +68,22 @@ class CommandController extends Controller
      * @param integer $userID
      * @return Response
      */
-    public function collectionCommands(Request $request, Collection $collection): Response
+    public function collectionCommands(Request $request, string $encryptedID): Response
     {
-        $search = $request["search"];
-        $sort = $request["sort"];
-        /*$user = User::where("id", $request["userID"])->first();
+        if (!empty($encryptedID)) {
+            $hashids = new Hashids("", 10);
+            $collectionID = $hashids->decode($encryptedID);
+            $collection = Collection::where("id", $collectionID[0])->first();
+            if (!empty($collection)) {
+                $search = $request["search"];
+                $sort = $request["sort"];
 
-        if ($user->cannot("view", $collection)) {
-            abort(403);
-        }*/
-        $commands = $this->commandRepo->getPaginatedCommands($search, $sort, $collection->id);
-        return response($commands, 200);
+                $commands = $this->commandRepo->getPaginatedCommands($search, $sort, $collection->id);
+                return response($commands, 200);
+            }
+        }
+
+        return response("", 404);
     }
 
     /**
@@ -86,11 +92,20 @@ class CommandController extends Controller
      * @param integer $userID
      * @return Response
      */
-    public function sortCollectionCommands(int $collectionID, Request $request): Response
+    public function sortCollectionCommands(string $encryptedID, Request $request): Response
     {
-        $commands = $this->commandRepo->sortCollectionCommands($collectionID, $request["commands"]);
+        if (!empty($encryptedID)) {
+            $hashids = new Hashids("", 10);
+            $collectionID = $hashids->decode($encryptedID);
+            $collection = Collection::where("id", $collectionID[0])->first();
+            if (!empty($collection)) {
+                $commands = $this->commandRepo->sortCollectionCommands($collection->id, $request["commands"]);
 
-        return response($commands, 200);
+                return response($commands, 200);
+            }
+        }
+
+        return response("", 404);
     }
 
     /**

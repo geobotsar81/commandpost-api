@@ -30,7 +30,7 @@ class ContactController extends Controller
             "message" => $request["message"],
         ];
 
-        Mail::to("geobotsar@hotmail.com")->send(new ContactFormMail($contact));
+        Mail::to("info@commandpost.dev")->send(new ContactFormMail($contact));
         return response(200);
     }
 }

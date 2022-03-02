@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -84,7 +85,7 @@ class CommandRepository
     {
         $sortOptions = [];
         $paginate = 8;
-
+        DB::enableQueryLog();
         switch ($sort) {
             case 1:
                 $sortOptions["field"] = "command";
@@ -110,10 +111,18 @@ class CommandRepository
                 $sortOptions["field"] = "order";
                 $sortOptions["order"] = "desc";
                 break;
+            case 7:
+                $sortOptions["field"] = "additions";
+                $sortOptions["order"] = "asc";
+                break;
+            case 8:
+                $sortOptions["field"] = "additions";
+                $sortOptions["order"] = "desc";
+                break;
         }
 
         //Common Part
-        $commands = Command::with(["collection"])->where(function ($query) use ($search) {
+        $commands = Command::with(['collection'])->where(function ($query) use ($search) {
             $query->where("command", "LIKE", "%{$search}%")->orWhereHas("collection", function ($q) use ($search) {
                 $q->where("title", "LIKE", "%{$search}%");
             });
@@ -126,7 +135,9 @@ class CommandRepository
         }
 
         //Sort and Paginate
-        $commands = $commands->orderBy($sortOptions["field"], $sortOptions["order"])->paginate($paginate);
+        $commands = $commands->orderBy($sortOptions["field"], $sortOptions["order"]);
+
+        $commands=$commands->paginate($paginate);
 
         return $commands;
     }

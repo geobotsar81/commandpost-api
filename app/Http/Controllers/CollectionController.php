@@ -19,6 +19,22 @@ class CollectionController extends Controller
     }
 
     /**
+     * Display all routes
+     *
+     * @return Response
+     */
+    public function routes(): Response
+    {
+        $routes [0]= [
+                "url" => "http://myblog.org/blog/1",
+                "changefreq"=> "daily",
+                "priority"=> 1,
+        ];
+
+        return response($routes, 200);
+    }
+
+    /**
      * Display all Collections
      *
      * @return Response

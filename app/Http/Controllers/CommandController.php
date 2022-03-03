@@ -117,8 +117,8 @@ class CommandController extends Controller
     public function store(Request $request): Response
     {
         $request->validate([
-            "command" => ["required", "string", "max:255"],
-            "description" => ["nullable", "string", "max:50"],
+            "command" => ["required", "string", "max:150"],
+            "description" => ["nullable", "string", "max:150"],
             "collection" => ["required", "exists:collections,id"],
         ]);
         $this->commandRepo->saveCommand($request["command"], $request["description"], $request["collection"]);

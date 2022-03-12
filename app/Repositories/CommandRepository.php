@@ -84,7 +84,7 @@ class CommandRepository
     public function getPaginatedCommands(?string $search, int $sort, ?int $collectionID = null): ?LengthAwarePaginator
     {
         $sortOptions = [];
-        $paginate = 5;
+        $paginate = 8;
         DB::enableQueryLog();
         switch ($sort) {
             case 1:
